@@ -48,3 +48,10 @@ Routes
 
 ![image](https://github.com/SPGMesina/cheatsheeeeet/assets/72119848/7c292845-6fe1-4f79-b5b9-f0d2f5489742)
 
+
+
+
+Migration
+
+
+![image](https://github.com/SPGMesina/cheatsheeeeet/assets/72119848/ebc6e99d-fa75-47f7-94b6-32cc3d6a4b3b)
