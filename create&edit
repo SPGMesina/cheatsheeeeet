@@ -1,0 +1,175 @@
+Simple add and edit function
+Create a Model: php artisan make:model Item -m
+
+Edit Migration
+# // database/migrations/xxxx_xx_xx_create_items_table.php
+
+# use Illuminate\Database\Migrations\Migration;
+# use Illuminate\Database\Schema\Blueprint;
+# use Illuminate\Support\Facades\Schema;
+
+# class CreateItemsTable extends Migration
+# {
+#     public function up()
+#     {
+#         Schema::create('items', function (Blueprint $table) {
+#             $table->id();
+#             $table->string('name');
+#             $table->text('description')->nullable();
+#             $table->timestamps();
+#         });
+#     }
+
+#     public function down()
+#     {
+#         Schema::dropIfExists('items');
+#     }
+# };
+
+PHP ARTISAN MIGRATE
+_____________________________________________
+MAKE CONTROLLER
+# php artisan make:controller ItemController
+
+# // app/Http/Controllers/ItemController.php
+
+# namespace App\Http\Controllers;
+
+# use Illuminate\Http\Request;
+# use App\Models\Item;
+
+# class ItemController extends Controller
+# {
+#     public function index()
+#     {
+#         $items = Item::all();
+#         return view('items.index', compact('items'));
+#     }
+
+#     public function create()
+#     {
+#         return view('items.create');
+#     }
+
+#     public function store(Request $request)
+#     {
+#         $request->validate([
+#             'name' => 'required',
+#             'description' => 'nullable',
+#         ]);
+
+#         Item::create($request->all());
+
+#         return redirect()->route('items.index')->with('success', 'Item created successfully.');
+#     }
+
+#     public function edit(Item $item)
+#     {
+#         return view('items.edit', compact('item'));
+#     }
+
+#     public function update(Request $request, Item $item)
+#     {
+#         $request->validate([
+#             'name' => 'required',
+#             'description' => 'nullable',
+#         ]);
+
+#         $item->update($request->all());
+
+#         return redirect()->route('items.index')->with('success', 'Item updated successfully.');
+#     }
+
+#     public function destroy(Item $item)
+#     {
+#         $item->delete();
+
+#         return redirect()->route('items.index')->with('success', 'Item deleted successfully.');
+#     }
+# }
+
+
+CREATE VIEWS
+# Create views for listing, creating, editing items. You can place these views in the resources/views/items directory.
+
+# index.blade.php (List items)
+# create.blade.php (Create item)
+# edit.blade.php (Edit item)
+
+
+# <!-- resources/views/items/index.blade.php -->
+
+# <h1>Items</h1>
+
+# @foreach($items as $item)
+#     <p>{{ $item->name }} - {{ $item->description }}</p>
+# @endforeach
+
+
+
+DEFINE ROUTES
+
+// routes/web.php
+
+use App\Http\Controllers\ItemController;
+
+# Route::get('/items', [ItemController::class, 'index'])->name('items.index');
+# Route::get('/items/create', [ItemController::class, 'create'])->name('items.create');
+# Route::post('/items/store', [ItemController::class, 'store'])->name('items.store');
+# Route::get('/items/{item}/edit', [ItemController::class, 'edit'])->name('items.edit');
+# Route::put('/items/{item}', [ItemController::class, 'update'])->name('items.update');
+# Route::delete('/items/{item}', [ItemController::class, 'destroy'])->name('items.destroy');
+
+
+CREATE.BLADE.PHP
+# <!-- resources/views/items/create.blade.php -->
+
+# @extends('layouts.app')
+
+# @section('content')
+#     <h1>Create Item</h1>
+
+#     <form action="{{ route('items.store') }}" method="post">
+#         @csrf
+#         <div>
+#             <label for="name">Name:</label>
+#             <input type="text" name="name" id="name" required>
+#         </div>
+#         <div>
+#             <label for="description">Description:</label>
+#             <textarea name="description" id="description"></textarea>
+#         </div>
+#         <div>
+#             <button type="submit">Create Item</button>
+#         </div>
+#     </form>
+# @endsection
+
+
+
+
+EDIT.BLADE.PHP
+# <!-- resources/views/items/edit.blade.php -->
+
+# @extends('layouts.app')
+
+# @section('content')
+#     <h1>Edit Item</h1>
+
+#     <form action="{{ route('items.update', $item->id) }}" method="post">
+#         @csrf
+#         @method('put')
+#         <div>
+#             <label for="name">Name:</label>
+#             <input type="text" name="name" id="name" value="{{ $item->name }}" required>
+#         </div>
+#         <div>
+#             <label for="description">Description:</label>
+#             <textarea name="description" id="description">{{ $item->description }}</textarea>
+#         </div>
+#         <div>
+#             <button type="submit">Update Item</button>
+#         </div>
+#     </form>
+# @endsection
+
